@@ -1,0 +1,25 @@
+{
+  "_comment": "Offline demo data. Every currency links to USD at an exact reciprocal (no round-trip arbitrage), EXCEPT one planted triangular inconsistency: USD -> EUR -> GBP -> USD multiplies to > 1, giving the Bellman-Ford detector a single, unambiguous arbitrage cycle to find.",
+  "pairs": [
+    { "from": "USD", "to": "EUR", "rate": 0.90 },
+    { "from": "EUR", "to": "USD", "rate": 1.111111111 },
+
+    { "from": "USD", "to": "GBP", "rate": 0.77 },
+    { "from": "GBP", "to": "USD", "rate": 1.298701299 },
+
+    { "from": "EUR", "to": "GBP", "rate": 0.88 },
+    { "from": "GBP", "to": "EUR", "rate": 1.136363636 },
+
+    { "from": "USD", "to": "JPY", "rate": 148.0 },
+    { "from": "JPY", "to": "USD", "rate": 0.006756757 },
+
+    { "from": "USD", "to": "CHF", "rate": 0.88 },
+    { "from": "CHF", "to": "USD", "rate": 1.136363636 },
+
+    { "from": "USD", "to": "CAD", "rate": 1.36 },
+    { "from": "CAD", "to": "USD", "rate": 0.735294118 },
+
+    { "from": "USD", "to": "AUD", "rate": 1.52 },
+    { "from": "AUD", "to": "USD", "rate": 0.657894737 }
+  ]
+}
