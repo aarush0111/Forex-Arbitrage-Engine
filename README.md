@@ -2,7 +2,7 @@
 
 A forex arbitrage detection engine that models exchange rates between 30+ currencies
 as a directed graph and uses the **Bellman–Ford** algorithm (over log-transformed
-rates) to uncover arbitrage cycles — sequences of trades that return more of a
+rates) to uncover arbitrage cycles: sequences of trades that return more of a
 currency than you started with.
 
 - **C++ engine** (`src/`) fetches live rates from the [Open Exchange Rates API](https://openexchangerates.org/),
