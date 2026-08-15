@@ -11,6 +11,7 @@ using json = nlohmann::json;
 
 namespace {
 
+// curl hands us the response body in chunks
 size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     size_t total = size * nmemb;
     static_cast<std::string*>(userp)->append(static_cast<char*>(contents), total);
@@ -65,8 +66,7 @@ std::vector<RateFetcher::Rate> RateFetcher::crossRates(
         for (const auto& b : usdRates) {
             if (a.first == b.first) continue;
             if (a.second <= 0.0) continue;
-            // usdRates[X] = units of X per 1 USD.
-            // rate(A -> B) = (USD per A) inverse applied: B_per_USD / A_per_USD.
+            // usd[X] is X per 1 USD, so going A->B is just B's rate over A's
             rates.push_back(Rate{a.first, b.first, b.second / a.second});
         }
     }
@@ -92,8 +92,7 @@ std::vector<RateFetcher::Rate> RateFetcher::fetchFromFile(const std::string& pat
 
     json doc = json::parse(text);
 
-    // Format 1: explicit directed pairs. Lets the sample data carry a real
-    // (planted) inconsistency so the detector has something to find.
+    // sample data uses explicit pairs so it can carry a planted inconsistency
     if (doc.contains("pairs")) {
         std::vector<Rate> rates;
         for (const auto& p : doc["pairs"]) {
@@ -104,6 +103,6 @@ std::vector<RateFetcher::Rate> RateFetcher::fetchFromFile(const std::string& pat
         return rates;
     }
 
-    // Format 2: Open Exchange Rates USD-base table -> derived cross rates.
+    // otherwise treat it as the API's USD-base table
     return crossRates(parseUsdRates(text));
 }

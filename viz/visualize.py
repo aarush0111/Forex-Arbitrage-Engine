@@ -1,8 +1,7 @@
-"""Render the currency graph and highlight a detected arbitrage cycle.
+"""Draw the currency graph and highlight the arbitrage loop the engine found.
 
-Reads data/arbitrage_result.json (written by the C++ engine) and, for context,
-the same rate source the engine used. Draws every currency as a node and the
-arbitrage path as a bold highlighted cycle.
+Reads data/arbitrage_result.json plus the rates it ran on, colours the cycle
+red, and saves a PNG.
 """
 
 import json
