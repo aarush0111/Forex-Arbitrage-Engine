@@ -87,3 +87,6 @@ Forex Arbitrage Model/
     ├── visualize.py
     └── requirements.txt
 ```
+Heads up: this uses nlohmann/json for JSON parsing, which is just a single
+header file. It's not included in the repo, so grab json.hpp from
+https://github.com/nlohmann/json and drop it into src/ before building.
