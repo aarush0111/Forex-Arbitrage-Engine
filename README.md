@@ -87,7 +87,3 @@ Forex Arbitrage Model/
     ├── visualize.py
     └── requirements.txt
 ```
-
-> **Note:** `src/json.hpp` is expected to be the single-header
-> [nlohmann/json](https://github.com/nlohmann/json/releases). Download
-> `json.hpp` and drop it in `src/`, or install it via your package manager.
