@@ -14,30 +14,28 @@ int Graph::addCurrency(const std::string& code) {
 }
 
 void Graph::addRate(const std::string& from, const std::string& to, double rate) {
-    if (rate <= 0.0) return; // log is undefined for non-positive rates
+    if (rate <= 0.0) return; // can't take log of a non-positive rate
     addCurrency(from);
     addCurrency(to);
     edges_.push_back(Edge{index_[from], index_[to], -std::log(rate)});
     rate_[from][to] = rate;
 }
 
-// Bellman-Ford with negative-cycle detection (edge-list version).
-// Follows Listing 1 of the write-up.
 std::vector<std::string> Graph::findArbitrageCycle() const {
     int V = currencyCount();
     if (V == 0) return {};
 
     const double INF = std::numeric_limits<double>::infinity();
-    std::vector<double> dist(V, INF); // best known distance to each node
-    std::vector<int> pred(V, -1);     // predecessor, for cycle reconstruction
-    dist[0] = 0.0;                    // use the first currency as the source
+    std::vector<double> dist(V, INF);
+    std::vector<int> pred(V, -1);
+    dist[0] = 0.0;
 
-    // A tiny tolerance: exchange rates are only ever consistent to within
-    // floating-point rounding, so require an improvement bigger than this to
-    // avoid mistaking rounding noise for a (fake) negative cycle.
-    const double EPS = 1e-9;
+    // A rate and its reciprocal never cancel exactly in floating point, so a
+    // break-even loop lands a hair below zero. Ignore anything smaller than
+    // this or that rounding noise gets reported as arbitrage.
+    const double EPS = 1e-6;
 
-    // Phase 1: relax all edges V - 1 times.
+    // relax every edge V-1 times
     for (int pass = 0; pass < V - 1; ++pass) {
         for (const Edge& e : edges_) {
             if (dist[e.from] != INF &&
@@ -48,28 +46,24 @@ std::vector<std::string> Graph::findArbitrageCycle() const {
         }
     }
 
-    // Phase 2: one more pass. If anything still improves, a negative cycle
-    // (an arbitrage opportunity) is present.
+    // one more pass: anything still improving is fed by a negative cycle
     for (const Edge& e : edges_) {
         if (dist[e.from] != INF &&
             dist[e.from] + e.weight < dist[e.to] - EPS) {
             return reconstructCycle(e.to, pred);
         }
     }
-    return {}; // no arbitrage
+    return {};
 }
 
-// Recover the currency loop from predecessor pointers. Follows Listing 2.
 std::vector<std::string> Graph::reconstructCycle(
         int start, const std::vector<int>& pred) const {
     int V = currencyCount();
 
-    // The improving node may only lead into the cycle, so step back V times
-    // to make sure we are standing on it.
+    // start may only lead into the cycle, so step back V times to land on it
     int x = start;
     for (int i = 0; i < V; ++i) x = pred[x];
 
-    // Walk predecessors until we return to x; that loop is the cycle.
     std::vector<int> cycle;
     int cur = x;
     do {
@@ -78,7 +72,7 @@ std::vector<std::string> Graph::reconstructCycle(
     } while (cur != x);
     cycle.push_back(x);
 
-    std::reverse(cycle.begin(), cycle.end()); // present in trading order
+    std::reverse(cycle.begin(), cycle.end()); // put it in trading order
 
     std::vector<std::string> codes;
     codes.reserve(cycle.size());
