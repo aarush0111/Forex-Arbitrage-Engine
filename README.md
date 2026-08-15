@@ -2,7 +2,7 @@
 
 A forex arbitrage detection engine that models exchange rates between 30+ currencies
 as a directed graph and uses the **Bellman–Ford** algorithm (over log-transformed
-rates) to uncover arbitrage cycles — sequences of trades that return more of a
+rates) to uncover arbitrage cycles: sequences of trades that return more of a
 currency than you started with.
 
 - **C++ engine** (`src/`) fetches live rates from the [Open Exchange Rates API](https://openexchangerates.org/),
@@ -87,7 +87,6 @@ Forex Arbitrage Model/
     ├── visualize.py
     └── requirements.txt
 ```
-
-> **Note:** `src/json.hpp` is expected to be the single-header
-> [nlohmann/json](https://github.com/nlohmann/json/releases). Download
-> `json.hpp` and drop it in `src/`, or install it via your package manager.
+Heads up: this uses nlohmann/json for JSON parsing, which is just a single
+header file. It's not included in the repo, so grab json.hpp from
+https://github.com/nlohmann/json and drop it into src/ before building.
