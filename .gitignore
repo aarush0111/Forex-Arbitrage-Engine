@@ -1,0 +1,21 @@
+# Build output
+build/
+*.o
+*.obj
+*.exe
+
+# Vendored single-header dependency (download separately, see README)
+src/json.hpp
+
+# Generated artifacts
+data/arbitrage_result.json
+data/arbitrage_graph.png
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets — never commit your API key
+.env
